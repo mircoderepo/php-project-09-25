@@ -3,25 +3,25 @@ require __DIR__ . '/db.php';
 require __DIR__ . '/helpers.php';
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'criar') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'criar') {    //CREATE FUNCTION
+  $id = mb_strimwidth(hexdec(uniqid()), 6, 10, '');   //unique 16-Ch ID taken from time snapshot, truncated into INT value of 10 characters     <<<this line is fucked up>>>
   $titulo = trim($_POST['titulo'] ?? '');
   $desc = trim($_POST['descricao'] ?? '');
   $foto = upload_foto('foto');
-
   if ($titulo !== '' && $desc !== '') {
-    $st = $pdo->prepare("INSERT INTO sobre (titulo, descricao, foto_path) VALUES (:n,:d,:f)");
-    $st->execute([':n' => $titulo, ':d' => $desc, ':f' => $foto]);
+    $st = $pdo->prepare("INSERT INTO sobre (id, titulo, descricao, foto_path) VALUES (:i,:n,:d,:f)");
+    $st->execute([':i' => $id, ':n' => $titulo, ':d' => $desc, ':f' => $foto]);
     header("Location: sobre.php");
     exit;
   }
 }
 
 
-if (($_GET['acao'] ?? '') === 'del' && isset($_GET['id'])) {
+if (($_GET['acao'] ?? '') === 'del' && isset($_GET['id'])) {    //DELETE FUNCTION
   $id = (int)$_GET['id'];
   $st = $pdo->prepare("SELECT foto_path FROM sobre WHERE id=:id");
-  $st->execute([':id' => $id]);
-  if ($row = $st->fetch()) {
+  $st->execute([':id' => $id]); 
+  if ($row == $st->fetch()) {
     if ($row['foto_path'] && file_exists($row['foto_path'])) @unlink($row['foto_path']);
   }
   $pdo->prepare("DELETE FROM sobre WHERE id=:id")->execute([':id' => $id]);
@@ -30,8 +30,7 @@ if (($_GET['acao'] ?? '') === 'del' && isset($_GET['id'])) {
 }
 
 
-$lista = $pdo->query("SELECT * FROM sobre ORDER BY id DESC")->fetchAll();
-
+$lista = $pdo->query("SELECT * FROM sobre ORDER BY created_at DESC")->fetchAll();
 
 $edit = null;
 if (($_GET['acao'] ?? '') === 'edit' && isset($_GET['id'])) {
@@ -41,7 +40,7 @@ if (($_GET['acao'] ?? '') === 'edit' && isset($_GET['id'])) {
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualizar') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualizar') {    //UPDATE FUNCTION
   $id   = (int)$_POST['id'];
   $titulo = trim($_POST['titulo'] ?? '');
   $desc = trim($_POST['descricao'] ?? '');
@@ -51,13 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualiz
     if ($fotoNova) {
       $st = $pdo->prepare("SELECT foto_path FROM sobre WHERE id=:id");
       $st->execute([':id' => $id]);
-      if ($row = $st->fetch()) {
+      if ($row == $st->fetch()) {
         if ($row['foto_path'] && file_exists($row['foto_path'])) @unlink($row['foto_path']);
       }
-      $sql = "UPDATE sobre SET $titulo=:n, descricao=:d, foto_path=:f WHERE id=:id";
+      $sql = "UPDATE sobre SET titulo=:n, descricao=:d, foto_path=:f WHERE id=:id";
       $args = [':n' => $titulo, ':d' => $desc, ':f' => $fotoNova, ':id' => $id];
     } else {
-      $sql = "UPDATE sobre SET $titulo=:n, descricao=:d WHERE id=:id";
+      $sql = "UPDATE sobre SET titulo=:n, descricao=:d WHERE id=:id";
       $args = [':n' => $titulo, ':d' => $desc, ':id' => $id];
     }
     $pdo->prepare($sql)->execute($args);
@@ -70,24 +69,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualiz
 
 <h2>Sobre</h2>
 
-<h3>Adicionar novo</h3>
+<h3>Adicionar novo</h3>                                                                      <!-- CREATION INTERFACE -->
 <form method="post" enctype="multipart/form-data">
   <input type="hidden" name="acao" value="criar">
-  <p>titulo:<br><input type="text" name="titulo" required></p>
-  <p>descricao:<br><textarea name="descricao" rows="5" cols="60" required></textarea></p>
-  <p>Foto: <input type="file" name="foto" accept="image/*" required></p>
-  <p><button type="submit">Salvar</button></p>
+  <p>Titulo:<br><input type="text" name="titulo" required></p>                               <!-- required -->
+  <p>Descricao:<br><textarea name="descricao" rows="5" cols="60" required></textarea></p>    <!-- required -->
+  <p>Foto: <input type="file" name="foto" accept="image/*" required></p>                     <!-- required -->
+  <p><button type="submit">Salvar</button></p> 
 </form>
 
 <?php if ($edit): ?>
   <hr>
-  <h3>Adicionar imagem #<?= e($edit['id']) ?></h3>
+  <h3>Atualizar imagem #<?= e($edit['id']) ?></h3>                                                                  <!-- UPDATE INTERFACE -->
   <form method="post" enctype="multipart/form-data">
     <input type="hidden" name="acao" value="atualizar">
     <input type="hidden" name="id" value="<?= e($edit['id']) ?>">
-    <p>titulo:<br><input type="text" name="titulo" value="<?= e($edit['titulo']) ?>" required></p>
-    <p>descricao:<br><textarea name="descricao" rows="5" cols="60"><?= e($edit['descricao']) ?></textarea></p>
-    <p>Foto (enviar nova para substituir): <input type="file" name="foto" accept="image/*"></p>
+    <p>Titulo:<br><input type="text" name="titulo" value="<?= e($edit['titulo']) ?>"></p>                           <!-- not required -->
+    <p>Descricao:<br><textarea name="descricao" rows="5" cols="60"><?= e($edit['descricao']) ?></textarea></p>      <!-- not required -->
+    <p>Foto (enviar nova para substituir): <input type="file" name="foto" accept="image/*"></p>                     <!-- not required -->
     <?php if ($edit['foto_path']): ?>
       <p>Atual:<br><img src="<?= e($edit['foto_path']) ?>" width="200"></p>
     <?php endif; ?>
@@ -103,8 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualiz
   <table border="1" cellpadding="6" cellspacing="0">
     <tr>
       <th>ID</th>
-      <th>titulo</th>
-      <th>descricao</th>
+      <th>Titulo</th>
+      <th>Descricao</th>
       <th>Foto</th>
       <th>Ações</th>
     </tr>

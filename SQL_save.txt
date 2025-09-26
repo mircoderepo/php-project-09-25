@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 25-Set-2025 às 15:42
--- Versão do servidor: 10.1.38-MariaDB
--- versão do PHP: 7.3.3
+-- Generation Time: Sep 26, 2025 at 09:39 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,13 +18,24 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `sobre`
+-- Table structure for table `sobre`
 --
 
 CREATE TABLE `sobre` (
-  `id` int(11) NOT NULL,
+  `id` varchar(12) NOT NULL,
   `titulo` varchar(150) NOT NULL,
   `descricao` text NOT NULL,
   `foto_path` varchar(255) NOT NULL,
-  `created_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `sobre`
+--
+ALTER TABLE `sobre`
+  ADD PRIMARY KEY (`id`);
+COMMIT;
