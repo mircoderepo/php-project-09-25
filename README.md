@@ -24,15 +24,17 @@ ALTER TABLE `sobre`
 6. Aperte em "Go" para executar os comandos, o banco de dados ficará pronto para execução das páginas php
 7. Se desejar analizar as entidades do banco de dados, basta clicar em "sobre" na coluna da esquerda sob a seção "oficina_db", e selecionar a aba "Structure"
 8. retorne ao diretório C:\xampp\htdocs\php_galeria e abra o arquivo index.php com o seu navegador de preferência
-  
-  
+
+
+
 > [!IMPORTANT]
 > Mantenha os módulos Apache e MySQL rodando enquanto testar as páginas
-  
+
+
 Extras:
 - se desejar, há uma pasta de fotos para teste das funções de upload localizadas em C:\xampp\htdocs\php_galeria\samples
 - arquivos usados em upload serão salvos em C:\xampp\htdocs\php_galeria\uploads
-  
-  
+
+
 Feito por:
 THIAGO MIRANDA DE OLIVEIRA © 2025
