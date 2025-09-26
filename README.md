@@ -1,6 +1,6 @@
-Instalação para análise:
+# Instalação para análise:
 
-<< instruções feitas para a interface do phpMyAdmin em inglês >>
+* instruções feitas para a interface do phpMyAdmin em inglês
 
     1 - Extraia os conteúdos da pasta compactada em C:\xampp\htdocs (Diretório do index.php será C:\xampp\htdocs\php_galeria\index.php)
     2 - Execute xampp-control.exe e ative os módulos Apache e MySQL
