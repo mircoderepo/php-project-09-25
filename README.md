@@ -29,9 +29,9 @@ ALTER TABLE `sobre`
 > [!IMPORTANT]
 > Mantenha os módulos Apache e MySQL rodando enquanto testar as páginas
 
-> [!NOTE]
-> se desejar, há uma pasta de fotos para teste das funções de upload localizadas em C:\xampp\htdocs\php_galeria\samples
-> arquivos usados em upload serão salvos em C:\xampp\htdocs\php_galeria\uploads
+Extras:
+- se desejar, há uma pasta de fotos para teste das funções de upload localizadas em C:\xampp\htdocs\php_galeria\samples
+- arquivos usados em upload serão salvos em C:\xampp\htdocs\php_galeria\uploads
 
 
 Feito por:
